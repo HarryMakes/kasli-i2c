@@ -67,6 +67,8 @@ class Fastino:
             yield
             self.flash.write_disable()
             self.flash.power_down()
+            # DEBUG
+            logger.info("flash_upd done!")
         finally:
             self.spi.gpio_write(0b1000)
             self.spi.idle()
@@ -100,23 +102,24 @@ class Fastino:
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    serial = sys.argv[1]
-    logger.info("serial: %s", serial)
+    # serial = sys.argv[1]
+    # logger.info("serial: %s", serial)
 
-    url = "ftdi://ftdi:4232h:{}/2".format(serial)
+    # url = "ftdi://ftdi:4232h:{}/2".format(serial)
+    url = "ftdi://ftdi:4232h/2"
     with Kasli().configure(url) as bus, bus.enabled(sys.argv[2]):
         b = Fastino(bus)
-        b.report()
+        #b.report()
         b.init()
         action = sys.argv[3]
         if action == "eeprom":
             b.eeprom_update()
-        if False:
+        else:
             with b.flash_upd():
                 b.report_flash()
                 if action == "read":
                     b.dump(sys.argv[4])
                 elif action == "write":
                     with open(sys.argv[4], "rb") as fil:
-                        b.flash.flash(0, fil.read(), verify=False)
+                        b.flash.flash(0, fil.read(), verify=True)
         b.creload()

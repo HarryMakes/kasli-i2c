@@ -95,10 +95,11 @@ class Banker:
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    serial = sys.argv[1]
-    logger.info("serial: %s", serial)
+    # serial = sys.argv[1]
+    # logger.info("serial: %s", serial)
 
-    url = "ftdi://ftdi:4232h:{}/2".format(serial)
+    # url = "ftdi://ftdi:4232h:{}/2".format(serial)
+    url = "ftdi://ftdi:4232h/2"
     with Kasli().configure(url) as bus, bus.enabled(sys.argv[2]):
         b = Banker(bus)
         with b.sw.enabled(0b101):
